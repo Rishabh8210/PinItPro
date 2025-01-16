@@ -10,8 +10,10 @@ const createWindow = () => {
         width: 800,
         height: 600,
         webPreferences: {
-            preload: path.join(__dirname, 'preload.js')
-        }
+            preload: path.join(__dirname, 'preload.js'),
+            contextIsolation: true, // Keep context isolation for security
+            nodeIntegration: true, // Do not enable Node.js directly
+        },
     })
 
     // and load the index.html of the app.
@@ -20,6 +22,7 @@ const createWindow = () => {
     // Open the DevTools.
     // mainWindow.webContents.openDevTools()
 }
+
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -43,3 +46,12 @@ app.on('window-all-closed', () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+
+const { ipcMain } = require('electron');
+
+ipcMain.on('create-window', () => {
+    createWindow();
+});
+
+
+module.exports = { createWindow }
